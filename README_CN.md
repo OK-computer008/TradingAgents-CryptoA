@@ -57,7 +57,7 @@ TradingAgents-CryptoA 是在 [TauricResearch/TradingAgents](https://github.com/T
 ### 安装
 
 ```bash
-git clone https://github.com/Sliminem0410/TradingAgents-CryptoA.git
+git clone https://github.com/OK-computer008/TradingAgents-CryptoA.git
 cd TradingAgents-CryptoA
 
 # 创建虚拟环境

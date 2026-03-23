@@ -57,7 +57,7 @@ The framework deploys specialized LLM-powered agents (fundamental analysts, sent
 ### Installation
 
 ```bash
-git clone https://github.com/Sliminem0410/TradingAgents-CryptoA.git
+git clone https://github.com/OK-computer008/TradingAgents-CryptoA.git
 cd TradingAgents-CryptoA
 
 # Create virtual environment
