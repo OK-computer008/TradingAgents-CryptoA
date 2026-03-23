@@ -13,7 +13,7 @@ config = get_crypto_config(exchange="binance")
 # LLM 配置 — 按需修改
 # Supported llm_provider: openai, anthropic, google, deepseek, dashscope, ollama, openrouter, xai
 config["llm_provider"] = "anthropic"
-config["backend_url"] = "http://127.0.0.1:15721"      # 本地代理（如不需要可删除此行）
+# config["backend_url"] = "http://127.0.0.1:15721"      # 本地代理（如不需要可删除此行）
 config["deep_think_llm"] = "claude-sonnet-4-5"
 config["quick_think_llm"] = "claude-haiku-4-5"
 

@@ -9,7 +9,7 @@ load_dotenv()
 # Create a custom config using Anthropic Claude
 config = DEFAULT_CONFIG.copy()
 config["llm_provider"] = "anthropic"
-config["backend_url"] = "http://127.0.0.1:15721"    # 本地中转代理
+# config["backend_url"] = "http://127.0.0.1:15721"    # 本地中转代理
 config["deep_think_llm"] = "claude-sonnet-4-5"       # 深度思考用 Sonnet 4.5
 config["quick_think_llm"] = "claude-haiku-4-5"       # 快速任务用 Haiku 4.5
 config["max_debate_rounds"] = 1

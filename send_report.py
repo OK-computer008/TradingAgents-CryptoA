@@ -47,7 +47,7 @@ except Exception:
 
 SENDER_EMAIL = os.getenv("GMAIL_SENDER", "")
 SENDER_PASSWORD = os.getenv("GMAIL_APP_PASSWORD", "")
-RECIPIENT_EMAIL = "sliminem0410@gmail.com"
+RECIPIENT_EMAIL = os.getenv("REPORT_EMAIL", "your-email@example.com")
 RESULTS_FILE = "/Users/luwenyu/TradingAgents/eval_results/000938.SZ/TradingAgentsStrategy_logs/full_states_log_2025-03-20.json"
 
 
