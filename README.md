@@ -19,21 +19,45 @@ TradingAgents-CryptoA is an enhanced fork of [TauricResearch/TradingAgents](http
 
 The framework deploys specialized LLM-powered agents (fundamental analysts, sentiment experts, technical analysts, traders, risk management teams) that collaboratively evaluate market conditions and produce trading decisions.
 
-### Enhancements over Upstream
+### Comparison: Original vs CN vs CryptoA
 
-- **A-Share Market Support** — AKShare-based A-share quotes, financials, and fund flow data
-- **Cryptocurrency Support** — CCXT-based multi-exchange crypto data (Binance, OKX, Bybit, etc.)
-- **China-Specific Agents** — Chinese sentiment analyst, policy analyst, fund flow analyst, on-chain analyst
-- **Multi-LLM Providers** — 8 LLM providers supported with easy switching
-- **News Quality Filtering** — Deduplication, ad removal, freshness check, relevance ranking
-- **Chinese Output** — A-share mode defaults to Chinese analysis reports
+|  | [Original](https://github.com/TauricResearch/TradingAgents) | [CN Version](https://github.com/hsliuping/TradingAgents-CN) | **CryptoA (this project)** |
+|---|---|---|---|
+| **A-Share** | ❌ | ✅ Tushare / AKShare / BaoStock | ✅ AKShare (free, no registration) |
+| **Crypto** | ❌ | ❌ | ✅ CCXT (Binance / OKX / Bybit) |
+| **US Stocks** | ✅ yfinance / Alpha Vantage | ✅ | ✅ inherited |
+| **On-Chain Agent** | ❌ | ❌ | ✅ whale tracking / open interest |
+| **Policy Agent** | ❌ | ❌ | ✅ PBOC / CSRC policy analysis |
+| **Fund Flow Agent** | ❌ | ❌ | ✅ northbound / institutional flows |
+| **CN Sentiment Agent** | ❌ | ✅ | ✅ Eastmoney / Xueqiu sentiment |
+| **News Filter** | ❌ | ✅ multi-layer + quality scoring | ✅ dedup / ad removal / freshness / relevance |
+| **LLM Providers** | OpenAI | OpenAI / Gemini / DeepSeek / Qwen | 8 providers (OpenAI / Claude / Gemini / DeepSeek / Qwen / xAI / OpenRouter / Ollama) |
+| **WebUI** | ❌ | ✅ Vue 3 + Element Plus | ❌ CLI-first |
+| **DB Cache** | ❌ | ✅ MongoDB + Redis | ❌ file-based cache |
+| **Docker** | ❌ | ✅ multi-arch | ❌ local execution |
+| **License** | Apache 2.0 | Mixed (WebUI requires commercial license) | Apache 2.0 (fully open source) |
+
+### Strengths
+
+- 🔗 **Only TradingAgents fork with cryptocurrency support**
+- 🆓 **Zero-cost data** — AKShare + CCXT are free, no paid data subscriptions required
+- ⛓ **On-chain analysis** — unique on-chain agent for DeFi / derivatives traders
+- 🔌 **Widest LLM compatibility** — 8 providers + local Ollama
+- 📜 **Fully open source** — Apache 2.0, no commercial license restrictions
+
+### Current Limitations
+
+- 🖥 No WebUI yet (CLI-first; may be added later)
+- 🐳 No Docker deployment yet (planned for a future release)
+- 📊 A-share financial data relies on AKShare; fields may be less comprehensive than Tushare
+- 🧪 Early stage — agent prompts and workflows are under active optimization
 
 ## Quick Start
 
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/TradingAgents-CryptoA.git
+git clone https://github.com/Sliminem0410/TradingAgents-CryptoA.git
 cd TradingAgents-CryptoA
 
 # Create virtual environment

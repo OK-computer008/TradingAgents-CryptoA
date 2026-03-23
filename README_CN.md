@@ -19,21 +19,45 @@ TradingAgents-CryptoA 是在 [TauricResearch/TradingAgents](https://github.com/T
 
 框架通过部署多个专业化的 LLM Agent（基本面分析师、情绪分析师、技术分析师、交易员、风控团队等），协同评估市场状况并输出交易决策。
 
-### 相比原版的增强功能
+### 三个版本横向对比
 
-- **A股市场支持** — 基于 AKShare 的 A股行情、财务、资金流数据
-- **加密货币支持** — 基于 CCXT 的多交易所加密货币数据（Binance、OKX、Bybit 等）
-- **中国化 Agent** — 中文情绪分析师、政策分析师、资金流分析师、链上分析师
-- **多 LLM 供应商** — 支持 8 种 LLM 供应商，灵活切换
-- **新闻质量过滤** — 去重、去广告、时效性检查、相关性排序
-- **中文输出** — A股模式默认中文分析报告
+|  | [原版](https://github.com/TauricResearch/TradingAgents) | [CN 中文增强版](https://github.com/hsliuping/TradingAgents-CN) | **本项目 (CryptoA)** |
+|---|---|---|---|
+| **A股支持** | ❌ | ✅ Tushare / AKShare / BaoStock | ✅ AKShare（免费，零注册） |
+| **加密货币** | ❌ | ❌ | ✅ CCXT（Binance / OKX / Bybit） |
+| **美股支持** | ✅ yfinance / Alpha Vantage | ✅ | ✅ 继承原版 |
+| **链上分析 Agent** | ❌ | ❌ | ✅ 巨鲸追踪 / 合约持仓 |
+| **政策分析 Agent** | ❌ | ❌ | ✅ 央行 / 证监会政策解读 |
+| **资金流 Agent** | ❌ | ❌ | ✅ 北向资金 / 主力资金 |
+| **中文情绪 Agent** | ❌ | ✅ | ✅ 股吧 / 雪球情绪 |
+| **新闻过滤** | ❌ | ✅ 多层过滤 + 质量评估 | ✅ 去重 / 去广告 / 时效性 / 相关性 |
+| **LLM 供应商** | OpenAI | OpenAI / Gemini / DeepSeek / 通义千问 | 8 种（OpenAI / Claude / Gemini / DeepSeek / 通义千问 / xAI / OpenRouter / Ollama） |
+| **WebUI** | ❌ | ✅ Vue 3 + Element Plus | ❌ CLI 优先 |
+| **数据库缓存** | ❌ | ✅ MongoDB + Redis | ❌ 文件缓存 |
+| **Docker 部署** | ❌ | ✅ 多架构 | ❌ 本地运行 |
+| **License** | Apache 2.0 | 混合授权（WebUI 需商业授权） | Apache 2.0（完全开源） |
+
+### 我们的优势
+
+- 🔗 **唯一支持加密货币**的 TradingAgents 衍生版本
+- 🆓 **零成本数据源** — AKShare + CCXT 全免费，无需注册付费数据服务
+- ⛓ **链上分析能力** — 独有的链上分析 Agent，适合 DeFi / 合约交易者
+- 🔌 **最广泛的 LLM 兼容** — 8 种供应商 + Ollama 本地部署
+- 📜 **完全开源** — Apache 2.0，无商业授权限制
+
+### 当前局限
+
+- 🖥 暂无 WebUI（CLI 优先，后续可能添加）
+- 🐳 暂无 Docker 部署（后续版本计划支持）
+- 📊 A股财报数据依赖 AKShare，字段可能不如 Tushare 丰富
+- 🧪 项目处于早期阶段，Agent prompt 和工作流仍在持续优化
 
 ## 快速开始
 
 ### 安装
 
 ```bash
-git clone https://github.com/your-username/TradingAgents-CryptoA.git
+git clone https://github.com/Sliminem0410/TradingAgents-CryptoA.git
 cd TradingAgents-CryptoA
 
 # 创建虚拟环境
