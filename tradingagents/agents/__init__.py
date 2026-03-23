@@ -7,6 +7,12 @@ from .analysts.market_analyst import create_market_analyst
 from .analysts.news_analyst import create_news_analyst
 from .analysts.social_media_analyst import create_social_media_analyst
 
+# New Chinese market analysts
+from .analysts.cn_sentiment_analyst import create_cn_sentiment_analyst
+from .analysts.policy_analyst import create_policy_analyst
+from .analysts.fund_flow_analyst import create_fund_flow_analyst
+from .analysts.onchain_analyst import create_onchain_analyst
+
 from .researchers.bear_researcher import create_bear_researcher
 from .researchers.bull_researcher import create_bull_researcher
 
@@ -37,4 +43,9 @@ __all__ = [
     "create_conservative_debator",
     "create_social_media_analyst",
     "create_trader",
+    # New Chinese market analysts
+    "create_cn_sentiment_analyst",
+    "create_policy_analyst",
+    "create_fund_flow_analyst",
+    "create_onchain_analyst",
 ]

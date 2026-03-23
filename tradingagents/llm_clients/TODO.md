@@ -1,24 +1,26 @@
 # LLM Clients - Consistency Improvements
 
-## Issues to Fix
+## Completed
 
-### 1. `validate_model()` is never called
-- Add validation call in `get_llm()` with warning (not error) for unknown models
+### 1. `validate_model()` now called in `get_llm()`
+- All three clients (OpenAI, Anthropic, Google) call `validate_model()` at the start of `get_llm()`
+- Issues a warning (not error) for unknown models — allows new/custom models to work
 
-### 2. Inconsistent parameter handling
-| Client | API Key Param | Special Params |
-|--------|---------------|----------------|
-| OpenAI | `api_key` | `reasoning_effort` |
-| Anthropic | `api_key` | `thinking_config` → `thinking` |
-| Google | `google_api_key` | `thinking_budget` |
+### 2. Unified `api_key` parameter
+- All clients now accept `api_key` kwarg and map it to provider-specific keys:
+  - OpenAI/xAI/DeepSeek/DashScope: passed directly as `api_key`
+  - Anthropic: mapped to `anthropic_api_key`
+  - Google: mapped to `google_api_key` (still accepts `google_api_key` directly too)
 
-**Fix:** Standardize with unified `api_key` that maps to provider-specific keys
+### 3. `base_url` handling clarified
+- OpenAI client: uses `base_url` as fallback when provider doesn't have a built-in URL
+- Anthropic client: maps `base_url` to `anthropic_api_url`
+- Google client: `base_url` accepted but unused (Google doesn't support custom endpoints)
 
-### 3. `base_url` accepted but ignored
-- `AnthropicClient`: accepts `base_url` but never uses it
-- `GoogleClient`: accepts `base_url` but never uses it (correct - Google doesn't support it)
+### 4. validators.py synced with all providers
+- Added deepseek and dashscope model lists
+- Updated docstring for validate_model()
 
-**Fix:** Remove unused `base_url` from clients that don't support it
+## Remaining
 
-### 4. Update validators.py with models from CLI
-- Sync `VALID_MODELS` dict with CLI model options after Feature 2 is complete
+- Monitor new model releases and update VALID_MODELS accordingly

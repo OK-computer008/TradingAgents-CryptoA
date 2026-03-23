@@ -24,6 +24,41 @@ from .alpha_vantage import (
 )
 from .alpha_vantage_common import AlphaVantageRateLimitError
 
+# AKShare vendor (A-share / Chinese stock market)
+from .akshare_provider import (
+    get_stock as get_akshare_stock,
+    get_indicator as get_akshare_indicator,
+    get_fundamentals as get_akshare_fundamentals,
+    get_balance_sheet as get_akshare_balance_sheet,
+    get_cashflow as get_akshare_cashflow,
+    get_income_statement as get_akshare_income_statement,
+    get_insider_transactions as get_akshare_insider_transactions,
+    get_news as get_akshare_news,
+    get_global_news as get_akshare_global_news,
+    get_fund_flow as get_akshare_fund_flow,
+    get_north_flow as get_akshare_north_flow,
+    get_cn_sentiment as get_akshare_cn_sentiment,
+)
+
+# CCXT vendor (Cryptocurrency)
+from .ccxt_provider import (
+    get_stock as get_ccxt_stock,
+    get_indicator as get_ccxt_indicator,
+    get_fundamentals as get_ccxt_fundamentals,
+    get_balance_sheet as get_ccxt_balance_sheet,
+    get_cashflow as get_ccxt_cashflow,
+    get_income_statement as get_ccxt_income_statement,
+    get_news as get_ccxt_news,
+    get_global_news as get_ccxt_global_news,
+    get_insider_transactions as get_ccxt_insider_transactions,
+)
+
+# Chinese news provider
+from .cn_news_provider import (
+    get_cn_financial_news,
+    get_policy_news,
+)
+
 # Configuration and routing logic
 from .config import get_config
 
@@ -57,12 +92,30 @@ TOOLS_CATEGORIES = {
             "get_global_news",
             "get_insider_transactions",
         ]
-    }
+    },
+    # New categories for Chinese market
+    "cn_market_data": {
+        "description": "Chinese market specific data (fund flow, north capital, sentiment)",
+        "tools": [
+            "get_fund_flow",
+            "get_north_flow",
+            "get_cn_sentiment",
+        ]
+    },
+    "cn_policy_data": {
+        "description": "Chinese policy and regulatory news",
+        "tools": [
+            "get_cn_financial_news",
+            "get_policy_news",
+        ]
+    },
 }
 
 VENDOR_LIST = [
     "yfinance",
     "alpha_vantage",
+    "akshare",
+    "ccxt",
 ]
 
 # Mapping of methods to their vendor-specific implementations
@@ -71,41 +124,75 @@ VENDOR_METHODS = {
     "get_stock_data": {
         "alpha_vantage": get_alpha_vantage_stock,
         "yfinance": get_YFin_data_online,
+        "akshare": get_akshare_stock,
+        "ccxt": get_ccxt_stock,
     },
     # technical_indicators
     "get_indicators": {
         "alpha_vantage": get_alpha_vantage_indicator,
         "yfinance": get_stock_stats_indicators_window,
+        "akshare": get_akshare_indicator,
+        "ccxt": get_ccxt_indicator,
     },
     # fundamental_data
     "get_fundamentals": {
         "alpha_vantage": get_alpha_vantage_fundamentals,
         "yfinance": get_yfinance_fundamentals,
+        "akshare": get_akshare_fundamentals,
+        "ccxt": get_ccxt_fundamentals,
     },
     "get_balance_sheet": {
         "alpha_vantage": get_alpha_vantage_balance_sheet,
         "yfinance": get_yfinance_balance_sheet,
+        "akshare": get_akshare_balance_sheet,
+        "ccxt": get_ccxt_balance_sheet,
     },
     "get_cashflow": {
         "alpha_vantage": get_alpha_vantage_cashflow,
         "yfinance": get_yfinance_cashflow,
+        "akshare": get_akshare_cashflow,
+        "ccxt": get_ccxt_cashflow,
     },
     "get_income_statement": {
         "alpha_vantage": get_alpha_vantage_income_statement,
         "yfinance": get_yfinance_income_statement,
+        "akshare": get_akshare_income_statement,
+        "ccxt": get_ccxt_income_statement,
     },
     # news_data
     "get_news": {
         "alpha_vantage": get_alpha_vantage_news,
         "yfinance": get_news_yfinance,
+        "akshare": get_akshare_news,
+        "ccxt": get_ccxt_news,
     },
     "get_global_news": {
         "yfinance": get_global_news_yfinance,
         "alpha_vantage": get_alpha_vantage_global_news,
+        "akshare": get_akshare_global_news,
+        "ccxt": get_ccxt_global_news,
     },
     "get_insider_transactions": {
         "alpha_vantage": get_alpha_vantage_insider_transactions,
         "yfinance": get_yfinance_insider_transactions,
+        "akshare": get_akshare_insider_transactions,
+        "ccxt": get_ccxt_insider_transactions,
+    },
+    # Chinese market specific
+    "get_fund_flow": {
+        "akshare": get_akshare_fund_flow,
+    },
+    "get_north_flow": {
+        "akshare": get_akshare_north_flow,
+    },
+    "get_cn_sentiment": {
+        "akshare": get_akshare_cn_sentiment,
+    },
+    "get_cn_financial_news": {
+        "akshare": get_cn_financial_news,
+    },
+    "get_policy_news": {
+        "akshare": get_policy_news,
     },
 }
 

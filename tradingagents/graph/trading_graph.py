@@ -33,6 +33,15 @@ from tradingagents.agents.utils.agent_utils import (
     get_global_news
 )
 
+# Import Chinese market specific tools
+from tradingagents.agents.utils.cn_data_tools import (
+    get_fund_flow,
+    get_north_flow,
+    get_cn_sentiment,
+    get_cn_financial_news,
+    get_policy_news,
+)
+
 from .conditional_logic import ConditionalLogic
 from .setup import GraphSetup
 from .propagation import Propagator
@@ -45,7 +54,7 @@ class TradingAgentsGraph:
 
     def __init__(
         self,
-        selected_analysts=["market", "social", "news", "fundamentals"],
+        selected_analysts=None,
         debug=False,
         config: Dict[str, Any] = None,
         callbacks: Optional[List] = None,
@@ -53,14 +62,28 @@ class TradingAgentsGraph:
         """Initialize the trading agents graph and components.
 
         Args:
-            selected_analysts: List of analyst types to include
+            selected_analysts: List of analyst types to include. If None, auto-selects
+                based on market_type in config:
+                - us_stock: ["market", "social", "news", "fundamentals"]
+                - a_share:  ["market", "fundamentals", "cn_sentiment", "policy", "fund_flow", "news"]
+                - crypto:   ["market", "onchain", "news", "fundamentals"]
             debug: Whether to run in debug mode
             config: Configuration dictionary. If None, uses default config
-            callbacks: Optional list of callback handlers (e.g., for tracking LLM/tool stats)
+            callbacks: Optional list of callback handlers
         """
         self.debug = debug
         self.config = config or DEFAULT_CONFIG
         self.callbacks = callbacks or []
+
+        # Auto-select analysts based on market type if not specified
+        if selected_analysts is None:
+            market_type = self.config.get("market_type", "us_stock")
+            if market_type == "a_share":
+                selected_analysts = ["market", "fundamentals", "cn_sentiment", "policy", "fund_flow", "news"]
+            elif market_type == "crypto":
+                selected_analysts = ["market", "onchain", "news"]
+            else:
+                selected_analysts = ["market", "social", "news", "fundamentals"]
 
         # Update the interface's config
         set_config(self.config)
@@ -152,24 +175,20 @@ class TradingAgentsGraph:
 
     def _create_tool_nodes(self) -> Dict[str, ToolNode]:
         """Create tool nodes for different data sources using abstract methods."""
-        return {
+        nodes = {
             "market": ToolNode(
                 [
-                    # Core stock data tools
                     get_stock_data,
-                    # Technical indicators
                     get_indicators,
                 ]
             ),
             "social": ToolNode(
                 [
-                    # News tools for social media analysis
                     get_news,
                 ]
             ),
             "news": ToolNode(
                 [
-                    # News and insider information
                     get_news,
                     get_global_news,
                     get_insider_transactions,
@@ -177,14 +196,40 @@ class TradingAgentsGraph:
             ),
             "fundamentals": ToolNode(
                 [
-                    # Fundamental analysis tools
                     get_fundamentals,
                     get_balance_sheet,
                     get_cashflow,
                     get_income_statement,
                 ]
             ),
+            # Chinese market analyst tool nodes
+            "cn_sentiment": ToolNode(
+                [
+                    get_cn_sentiment,
+                    get_news,
+                    get_cn_financial_news,
+                ]
+            ),
+            "policy": ToolNode(
+                [
+                    get_policy_news,
+                    get_cn_financial_news,
+                ]
+            ),
+            "fund_flow": ToolNode(
+                [
+                    get_fund_flow,
+                    get_north_flow,
+                ]
+            ),
+            "onchain": ToolNode(
+                [
+                    get_stock_data,
+                    get_news,
+                ]
+            ),
         }
+        return nodes
 
     def propagate(self, company_name, trade_date):
         """Run the trading agents graph for a company on a specific date."""
@@ -223,13 +268,18 @@ class TradingAgentsGraph:
 
     def _log_state(self, trade_date, final_state):
         """Log the final state to a JSON file."""
-        self.log_states_dict[str(trade_date)] = {
+        log_entry = {
             "company_of_interest": final_state["company_of_interest"],
             "trade_date": final_state["trade_date"],
-            "market_report": final_state["market_report"],
-            "sentiment_report": final_state["sentiment_report"],
-            "news_report": final_state["news_report"],
-            "fundamentals_report": final_state["fundamentals_report"],
+            "market_report": final_state.get("market_report", ""),
+            "sentiment_report": final_state.get("sentiment_report", ""),
+            "news_report": final_state.get("news_report", ""),
+            "fundamentals_report": final_state.get("fundamentals_report", ""),
+            # New Chinese market reports
+            "cn_sentiment_report": final_state.get("cn_sentiment_report", ""),
+            "policy_report": final_state.get("policy_report", ""),
+            "fund_flow_report": final_state.get("fund_flow_report", ""),
+            "onchain_report": final_state.get("onchain_report", ""),
             "investment_debate_state": {
                 "bull_history": final_state["investment_debate_state"]["bull_history"],
                 "bear_history": final_state["investment_debate_state"]["bear_history"],
@@ -252,6 +302,7 @@ class TradingAgentsGraph:
             "investment_plan": final_state["investment_plan"],
             "final_trade_decision": final_state["final_trade_decision"],
         }
+        self.log_states_dict[str(trade_date)] = log_entry
 
         # Save to file
         directory = Path(f"eval_results/{self.ticker}/TradingAgentsStrategy_logs/")

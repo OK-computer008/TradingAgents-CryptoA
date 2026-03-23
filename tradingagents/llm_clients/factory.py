@@ -15,7 +15,8 @@ def create_llm_client(
     """Create an LLM client for the specified provider.
 
     Args:
-        provider: LLM provider (openai, anthropic, google, xai, ollama, openrouter)
+        provider: LLM provider (openai, anthropic, google, deepseek, dashscope,
+                  xai, ollama, openrouter)
         model: Model name/identifier
         base_url: Optional base URL for API endpoint
         **kwargs: Additional provider-specific arguments
@@ -39,6 +40,12 @@ def create_llm_client(
 
     if provider_lower == "xai":
         return OpenAIClient(model, base_url, provider="xai", **kwargs)
+
+    if provider_lower == "deepseek":
+        return OpenAIClient(model, base_url, provider="deepseek", **kwargs)
+
+    if provider_lower == "dashscope":
+        return OpenAIClient(model, base_url, provider="dashscope", **kwargs)
 
     if provider_lower == "anthropic":
         return AnthropicClient(model, base_url, **kwargs)

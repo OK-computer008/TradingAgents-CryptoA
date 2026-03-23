@@ -61,6 +61,12 @@ class AgentState(MessagesState):
     ]
     fundamentals_report: Annotated[str, "Report from the Fundamentals Researcher"]
 
+    # Chinese market specific reports
+    cn_sentiment_report: Annotated[str, "Report from the Chinese Sentiment Analyst"]
+    policy_report: Annotated[str, "Report from the Policy Analyst"]
+    fund_flow_report: Annotated[str, "Report from the Fund Flow Analyst"]
+    onchain_report: Annotated[str, "Report from the OnChain Analyst"]
+
     # researcher team discussion step
     investment_debate_state: Annotated[
         InvestDebateState, "Current state of the debate on if to invest or not"

@@ -44,10 +44,14 @@ class GraphSetup:
 
         Args:
             selected_analysts (list): List of analyst types to include. Options are:
-                - "market": Market analyst
+                - "market": Market analyst (technical analysis)
                 - "social": Social media analyst
                 - "news": News analyst
                 - "fundamentals": Fundamentals analyst
+                - "cn_sentiment": Chinese sentiment analyst (A-share)
+                - "policy": Policy analyst (A-share)
+                - "fund_flow": Fund flow analyst (A-share)
+                - "onchain": On-chain analyst (crypto)
         """
         if len(selected_analysts) == 0:
             raise ValueError("Trading Agents Graph Setup Error: no analysts selected!")
@@ -84,6 +88,35 @@ class GraphSetup:
             )
             delete_nodes["fundamentals"] = create_msg_delete()
             tool_nodes["fundamentals"] = self.tool_nodes["fundamentals"]
+
+        # New Chinese market analysts
+        if "cn_sentiment" in selected_analysts:
+            analyst_nodes["cn_sentiment"] = create_cn_sentiment_analyst(
+                self.quick_thinking_llm
+            )
+            delete_nodes["cn_sentiment"] = create_msg_delete()
+            tool_nodes["cn_sentiment"] = self.tool_nodes["cn_sentiment"]
+
+        if "policy" in selected_analysts:
+            analyst_nodes["policy"] = create_policy_analyst(
+                self.quick_thinking_llm
+            )
+            delete_nodes["policy"] = create_msg_delete()
+            tool_nodes["policy"] = self.tool_nodes["policy"]
+
+        if "fund_flow" in selected_analysts:
+            analyst_nodes["fund_flow"] = create_fund_flow_analyst(
+                self.quick_thinking_llm
+            )
+            delete_nodes["fund_flow"] = create_msg_delete()
+            tool_nodes["fund_flow"] = self.tool_nodes["fund_flow"]
+
+        if "onchain" in selected_analysts:
+            analyst_nodes["onchain"] = create_onchain_analyst(
+                self.quick_thinking_llm
+            )
+            delete_nodes["onchain"] = create_msg_delete()
+            tool_nodes["onchain"] = self.tool_nodes["onchain"]
 
         # Create researcher and manager nodes
         bull_researcher_node = create_bull_researcher(

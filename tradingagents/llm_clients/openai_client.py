@@ -1,4 +1,5 @@
 import os
+import warnings
 from typing import Any, Optional
 
 from langchain_openai import ChatOpenAI
@@ -27,7 +28,16 @@ class UnifiedChatOpenAI(ChatOpenAI):
 
 
 class OpenAIClient(BaseLLMClient):
-    """Client for OpenAI, Ollama, OpenRouter, and xAI providers."""
+    """Client for OpenAI, Ollama, OpenRouter, xAI, DeepSeek, and DashScope providers."""
+
+    # Provider-specific base URLs and env var names
+    _PROVIDER_CONFIG = {
+        "xai": ("https://api.x.ai/v1", "XAI_API_KEY"),
+        "openrouter": ("https://openrouter.ai/api/v1", "OPENROUTER_API_KEY"),
+        "ollama": ("http://localhost:11434/v1", None),
+        "deepseek": ("https://api.deepseek.com/v1", "DEEPSEEK_API_KEY"),
+        "dashscope": ("https://dashscope.aliyuncs.com/compatible-mode/v1", "DASHSCOPE_API_KEY"),
+    }
 
     def __init__(
         self,
@@ -41,21 +51,24 @@ class OpenAIClient(BaseLLMClient):
 
     def get_llm(self) -> Any:
         """Return configured ChatOpenAI instance."""
+        if not self.validate_model():
+            warnings.warn(
+                f"Model '{self.model}' is not in the known model list for provider "
+                f"'{self.provider}'. It may still work if the provider supports it.",
+                stacklevel=2,
+            )
+
         llm_kwargs = {"model": self.model}
 
-        if self.provider == "xai":
-            llm_kwargs["base_url"] = "https://api.x.ai/v1"
-            api_key = os.environ.get("XAI_API_KEY")
-            if api_key:
-                llm_kwargs["api_key"] = api_key
-        elif self.provider == "openrouter":
-            llm_kwargs["base_url"] = "https://openrouter.ai/api/v1"
-            api_key = os.environ.get("OPENROUTER_API_KEY")
-            if api_key:
-                llm_kwargs["api_key"] = api_key
-        elif self.provider == "ollama":
-            llm_kwargs["base_url"] = "http://localhost:11434/v1"
-            llm_kwargs["api_key"] = "ollama"  # Ollama doesn't require auth
+        if self.provider in self._PROVIDER_CONFIG:
+            default_url, env_key = self._PROVIDER_CONFIG[self.provider]
+            llm_kwargs["base_url"] = default_url
+            if self.provider == "ollama":
+                llm_kwargs["api_key"] = "ollama"
+            elif env_key:
+                api_key = os.environ.get(env_key)
+                if api_key:
+                    llm_kwargs["api_key"] = api_key
         elif self.base_url:
             llm_kwargs["base_url"] = self.base_url
 

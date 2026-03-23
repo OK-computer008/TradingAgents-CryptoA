@@ -1,4 +1,5 @@
 from typing import Any, Optional
+import warnings
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -36,11 +37,22 @@ class GoogleClient(BaseLLMClient):
 
     def get_llm(self) -> Any:
         """Return configured ChatGoogleGenerativeAI instance."""
+        if not self.validate_model():
+            warnings.warn(
+                f"Model '{self.model}' is not in the known model list for Google. "
+                "It may still work if the provider supports it.",
+                stacklevel=2,
+            )
+
         llm_kwargs = {"model": self.model}
 
         for key in ("timeout", "max_retries", "google_api_key", "callbacks", "http_client", "http_async_client"):
             if key in self.kwargs:
                 llm_kwargs[key] = self.kwargs[key]
+
+        # Unified api_key parameter: map to google_api_key
+        if "api_key" in self.kwargs and "google_api_key" not in self.kwargs:
+            llm_kwargs["google_api_key"] = self.kwargs["api_key"]
 
         # Map thinking_level to appropriate API param based on model
         # Gemini 3 Pro: low, high

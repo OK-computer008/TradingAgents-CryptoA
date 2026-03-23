@@ -43,6 +43,39 @@ class ConditionalLogic:
             return "tools_fundamentals"
         return "Msg Clear Fundamentals"
 
+    # New analyst conditional logic methods
+    def should_continue_cn_sentiment(self, state: AgentState):
+        """Determine if Chinese sentiment analysis should continue."""
+        messages = state["messages"]
+        last_message = messages[-1]
+        if last_message.tool_calls:
+            return "tools_cn_sentiment"
+        return "Msg Clear Cn_sentiment"
+
+    def should_continue_policy(self, state: AgentState):
+        """Determine if policy analysis should continue."""
+        messages = state["messages"]
+        last_message = messages[-1]
+        if last_message.tool_calls:
+            return "tools_policy"
+        return "Msg Clear Policy"
+
+    def should_continue_fund_flow(self, state: AgentState):
+        """Determine if fund flow analysis should continue."""
+        messages = state["messages"]
+        last_message = messages[-1]
+        if last_message.tool_calls:
+            return "tools_fund_flow"
+        return "Msg Clear Fund_flow"
+
+    def should_continue_onchain(self, state: AgentState):
+        """Determine if on-chain analysis should continue."""
+        messages = state["messages"]
+        last_message = messages[-1]
+        if last_message.tool_calls:
+            return "tools_onchain"
+        return "Msg Clear Onchain"
+
     def should_continue_debate(self, state: AgentState) -> str:
         """Determine if debate should continue."""
 
